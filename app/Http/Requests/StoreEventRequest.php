@@ -2,6 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\EventTypeEnum;
+use App\Enums\EventStatusEnum;
+use Illuminate\Validation\Rules\Enum;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreEventRequest extends FormRequest
@@ -22,18 +25,17 @@ class StoreEventRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'event_id' => ['required', 'string', 'max:255', 'unique:events,event_id'],
+            // 'event_id' => ['required', 'string', 'max:255', 'unique:events,event_id'],
             'name' => ['required', 'string', 'max:255'],
             'start_time' => ['required', 'date', 'before_or_equal:end_time'],
             'end_time' => ['required', 'date', 'after_or_equal:start_time'],
             'description' => ['nullable', 'string'],
             'location' => ['nullable', 'string', 'max:255'],
             'organizer' => ['nullable', 'string', 'max:255'],
-            'type' => ['nullable', 'in:conference,webinar,meeting,workshop,seminar,other'],
+            'type' => ['nullable', new Enum(EventTypeEnum::class)],
             'url' => ['nullable', 'url', 'max:255'],
-            'image' => ['nullable', 'string', 'max:255'],
-            'created_by' => ['nullable', 'string', 'max:255'],
-            'status' => ['required', 'in:scheduled,ongoing,complete'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,gif', 'max:2048'], // Image validation
+            'status' => ['required', new Enum(EventStatusEnum::class)],
         ];
     }
 }

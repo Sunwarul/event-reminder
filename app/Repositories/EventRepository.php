@@ -48,7 +48,7 @@ class EventRepository implements EventRepositoryInterface
 
     public function getLatestEvents($limit = 10)
     {
-        return $this->model->orderBy('created_at', 'desc')->take($limit)->get();
+        return $this->model->latest()->paginate($limit);
     }
 
     public function getUpcomingEvents($limit = 10)

@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Event extends Model
 {
@@ -24,4 +25,16 @@ class Event extends Model
         'image',
         'created_by',
     ];
+
+    protected $casts = [
+        'start_time' => 'datetime:j F, Y H:i A',
+        'end_time' => 'datetime:j F, Y H:i A',
+        'status' => 'string',
+        'type' => 'string',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'created_by', 'id');
+    }
 }

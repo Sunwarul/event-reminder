@@ -7,6 +7,10 @@ import EventForm from './EventForm.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
+        title: 'Event Management',
+        href: '/events',
+    },
+    {
         title: 'Create Event',
         href: '/events/create',
     },

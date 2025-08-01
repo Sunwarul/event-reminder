@@ -23,8 +23,8 @@ return new class extends Migration
             $table->enum('type', array_column(\App\Enums\EventTypeEnum::cases(), 'value'))->nullable();
             $table->string('url')->nullable(); // URL for more information or registration
             $table->string('image')->nullable(); // URL to an image representing the event
-            $table->string('created_by')->nullable(); // User who created the event
             $table->enum('status', array_column(\App\Enums\EventStatusEnum::cases(), 'value'))->default(\App\Enums\EventStatusEnum::SCHEDULED);
+            $table->foreignId('created_by')->constrained('users')->onDelete('cascade'); // Assuming you have a users table
             $table->timestamps();
         });
     }

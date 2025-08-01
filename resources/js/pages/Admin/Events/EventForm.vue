@@ -27,22 +27,21 @@ const form = useForm({
   type: props.event.type || '',
   url: props.event.url || '',
   image: props.event.image || '',
-  created_by: props.event.created_by || '',
   status: props.event.status || 'scheduled',
 });
 
 const eventTypes = [
-  { value: 'conference', label: 'Conference' },
-  { value: 'webinar', label: 'Webinar' },
-  { value: 'meeting', label: 'Meeting' },
-  { value: 'workshop', label: 'Workshop' },
-  { value: 'seminar', label: 'Seminar' },
-  { value: 'other', label: 'Other' },
+  { value: 'Conference', label: 'Conference' },
+  { value: 'Webinar', label: 'Webinar' },
+  { value: 'Meeting', label: 'Meeting' },
+  { value: 'Workshop', label: 'Workshop' },
+  { value: 'Seminar', label: 'Seminar' },
+  { value: 'Other', label: 'Other' },
 ];
 const eventStatuses = [
-  { value: 'scheduled', label: 'Scheduled' },
-  { value: 'ongoing', label: 'Ongoing' },
-  { value: 'complete', label: 'Complete' },
+  { value: 'Scheduled', label: 'Scheduled' },
+  { value: 'On-going', label: 'On-going' },
+  { value: 'Complete', label: 'Complete' },
 ];
 
 function submit() {
@@ -51,30 +50,48 @@ function submit() {
     preserveScroll: true,
   });
 }
+
+const imagePreview = ref<string | null>(null);
+
+function handleImageChange(e: Event) {
+    const target = e.target as HTMLInputElement | null;
+    const file = target && target.files ? target.files[0] : null;
+    if (file) {
+        form.image = file;
+        const reader = new FileReader();
+        reader.onload = ev => {
+            imagePreview.value = ev.target?.result as string;
+        };
+        reader.readAsDataURL(file);
+    } else {
+        form.image = '';
+        imagePreview.value = '';
+    }
+}
 </script>
 
 <template>
-  <form @submit.prevent="submit" class="space-y-4 max-w-xl mx-auto">
-    <div>
+  <form @submit.prevent="submit" class="space-y-4 max-w-2/3 mb-5 border p-5 rounded-lg">
+    <!-- <div>
       <label class="block mb-1 font-medium">Event ID</label>
-      <Input v-model="form.event_id" />
+      <Input v-model="form.event_id" required />
       <InputError :message="form.errors.event_id" />
-    </div>
+    </div> -->
     <div>
-      <label class="block mb-1 font-medium">Name</label>
+      <label class="block mb-1 font-medium">Event Name</label>
       <Input v-model="form.name" />
-      <InputError :message="form.errors.name" />
+      <InputError :message="form.errors.name" required/>
     </div>
     <div class="flex gap-2">
       <div class="flex-1">
         <label class="block mb-1 font-medium">Start Time</label>
         <Input v-model="form.start_time" type="datetime-local" />
-        <InputError :message="form.errors.start_time" />
+        <InputError :message="form.errors.start_time" required />
       </div>
       <div class="flex-1">
         <label class="block mb-1 font-medium">End Time</label>
         <Input v-model="form.end_time" type="datetime-local" />
-        <InputError :message="form.errors.end_time" />
+        <InputError :message="form.errors.end_time" required />
       </div>
     </div>
     <div>
@@ -102,18 +119,19 @@ function submit() {
     </div>
     <div>
       <label class="block mb-1 font-medium">URL</label>
-      <Input v-model="form.url" />
+      <Input v-model="form.url" type="url" />
       <InputError :message="form.errors.url" />
     </div>
     <div>
       <label class="block mb-1 font-medium">Image</label>
-      <Input v-model="form.image" />
+      <Input
+        type="file"
+        @change="handleImageChange"
+      />
       <InputError :message="form.errors.image" />
-    </div>
-    <div>
-      <label class="block mb-1 font-medium">Created By</label>
-      <Input v-model="form.created_by" />
-      <InputError :message="form.errors.created_by" />
+      <div v-if="imagePreview" class="mt-2">
+        <img :src="imagePreview" alt="Image Preview" class="max-h-40 rounded border" />
+      </div>
     </div>
     <div>
       <label class="block mb-1 font-medium">Status</label>

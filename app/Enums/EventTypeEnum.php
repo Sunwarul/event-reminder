@@ -4,12 +4,12 @@ namespace App\Enums;
 
 enum EventTypeEnum: string
 {
-    case CONFERENCE = 'conference';
-    case WEBINAR = 'webinar';
-    case MEETING = 'meeting';
-    case WORKSHOP = 'workshop';
-    case SEMINAR = 'seminar';
-    case OTHER = 'other';
+    case CONFERENCE = 'Conference';
+    case WEBINAR = 'Webinar';
+    case MEETING = 'Meeting';
+    case WORKSHOP = 'Workshop';
+    case SEMINAR = 'Seminar';
+    case OTHER = 'Other';
 
     public function label(): string
     {

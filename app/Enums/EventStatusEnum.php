@@ -4,16 +4,16 @@ namespace App\Enums;
 
 enum EventStatusEnum : string
 {
-    case SCHEDULED = 'scheduled';
-    case ONGOING = 'ongoing';
-    case COMPLETE = 'complete';
+    case SCHEDULED = 'Scheduled';
+    case ONGOING = 'On-going';
+    case COMPLETE = 'Complete';
 
     public function label(): string
     {
         return match ($this) {
-            self::SCHEDULED => 'scheduled',
-            self::ONGOING => 'ongoing',
-            self::COMPLETE => 'complete',
+            self::SCHEDULED => 'Scheduled',
+            self::ONGOING => 'On-going',
+            self::COMPLETE => 'Complete',
         };
     }
 }

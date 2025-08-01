@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Inertia\Inertia;
+use App\Models\Event;
+use Illuminate\Support\Str;
+use App\Enums\EventStatusEnum;
+use App\Utilities\EventIdGenerator;
+use App\Services\EventServiceInterface;
 use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
-use App\Models\Event;
-use App\Services\EventServiceInterface;
-use Inertia\Inertia;
 
 class EventController extends Controller
 {
@@ -20,7 +23,8 @@ class EventController extends Controller
     public function index()
     {
         return Inertia::render('Admin/Events/Index', [
-            'events' => $this->eventService->getAllEvents(),
+            'events' => $this->eventService->getLatestEvents(1),
+            // 'events' => $this->eventService->getAllEvents(),
         ]);
     }
 
@@ -37,7 +41,18 @@ class EventController extends Controller
      */
     public function store(StoreEventRequest $request)
     {
-        $event = $this->eventService->createEvent($request->validated());
+        $eventRequest = $request->validated();
+        $eventRequest['created_by'] = auth()->id(); // Assuming you want to set
+        $eventRequest['event_id'] = EventIdGenerator::generate(); // Generate a unique event ID
+        $eventRequest['status'] = $eventRequest['status'] ?? EventStatusEnum::SCHEDULED; // Default status
+
+        if($request->hasFile('image')) {
+            $eventRequest['image'] = $request->file('image')->store('events', 'public');
+        }
+
+        $event = $this->eventService->createEvent($eventRequest);
+
+
         return redirect()->route('events.show', $event->id)
             ->with('success', 'Event created successfully.');
     }
@@ -48,7 +63,7 @@ class EventController extends Controller
     public function show(Event $event)
     {
         return Inertia::render('Admin/Events/Show', [
-            'event' => $event,
+            'event' => $event->load('user'),
         ]);
     }
 

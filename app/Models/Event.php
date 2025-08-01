@@ -27,8 +27,8 @@ class Event extends Model
     ];
 
     protected $casts = [
-        'start_time' => 'datetime:j F, Y H:i A',
-        'end_time' => 'datetime:j F, Y H:i A',
+        // 'start_time' => 'datetime',
+        // 'end_time' => 'datetime',
         'status' => 'string',
         'type' => 'string',
     ];

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import Button from '@/components/ui/button/Button.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -22,6 +22,19 @@ const { events } = defineProps({
     },
 });
 
+const deleteEvent = (id: number) => {
+    if (confirm('Are you sure you want to delete this event?')) {
+        router.delete(`/events/${id}`, {
+            preserveScroll: true,
+            onSuccess: () => {
+                alert('Event deleted successfully');
+            },
+            onError: () => {
+                alert('Failed to delete event');
+            },
+        });
+    }
+};
 
 </script>
 
@@ -59,6 +72,8 @@ const { events } = defineProps({
                             <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">{{ event.status }}</td>
                             <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
                                 <Link :href="'/events/' + event.id" class="text-blue-600 hover:text-blue-900">View</Link>
+                                <Link :href="'/events/' + event.id + '/edit'"  class="text-blue-600 hover:text-blue-900 px-2">Edit</Link>
+                                <Button @click.prevent="deleteEvent(event.id)" class="px-2">Delete</Button>
                             </td>
                         </tr>
                     </tbody>

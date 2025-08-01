@@ -15,6 +15,14 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/events/create',
     },
 ];
+
+const { event } = defineProps({
+    event: {
+        type: Object,
+        default: () => ({}),
+    },
+});
+
 </script>
 
 <template>
@@ -22,7 +30,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     <Head title="Create Event" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
-            <EventForm submit-label="Create Event" />
+            <EventForm submit-label="Create Event" v-bind:event="event" />
         </div>
     </AppLayout>
 </template>

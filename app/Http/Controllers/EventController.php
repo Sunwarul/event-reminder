@@ -23,8 +23,7 @@ class EventController extends Controller
     public function index()
     {
         return Inertia::render('Admin/Events/Index', [
-            'events' => $this->eventService->getLatestEvents(1),
-            // 'events' => $this->eventService->getAllEvents(),
+            'events' => $this->eventService->getLatestEvents(),
         ]);
     }
 
@@ -72,7 +71,7 @@ class EventController extends Controller
      */
     public function edit(Event $event)
     {
-        return Inertia::render('Admin/Events/Edit', [
+        return Inertia::render('Admin/Events/Create', [
             'event' => $event,
         ]);
     }
@@ -95,5 +94,18 @@ class EventController extends Controller
         $this->eventService->deleteEvent($event->id);
         return redirect()->route('events.index')
             ->with('success', 'Event deleted successfully.');
+    }
+
+    public function removeImage(Event $event)
+    {
+        if ($event->image) {
+            \Storage::disk('public')->delete($event->image);
+            $event->image = null;
+            $event->save();
+        }
+
+        return response()->json([
+            'message' => 'Image removed successfully.',
+        ]);
     }
 }

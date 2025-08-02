@@ -2,7 +2,6 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
-
 import EventForm from './EventForm.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [

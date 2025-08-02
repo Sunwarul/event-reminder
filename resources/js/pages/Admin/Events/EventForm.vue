@@ -4,6 +4,7 @@ import Input from '@/components/ui/input/Input.vue';
 import Button from '@/components/ui/button/Button.vue';
 import { router, useForm } from '@inertiajs/vue3';
 import InputError from '@/components/InputError.vue';
+import { saveEventOffline } from '@/lib/db';
 
 const props = defineProps({
     event: {
@@ -44,17 +45,36 @@ const eventStatuses = [
     { value: 'Complete', label: 'Complete' },
 ];
 
-function submit() {
-    if (! props.event.id) {
-        form.post(route('events.store', props.event.id), {
+async function submit() {
+    if (!navigator.onLine) {
+        if (!props.event.id) {
+            await saveEventOffline(form.data(), 'create');
+        } else {
+            await saveEventOffline({ ...form.data(), id: props.event.id }, 'update');
+        }
+        alert('You are offline. Event will be synced when online.');
+        return;
+    }
+    if (!props.event.id) {
+        form.post(route('events.store'), {
             preserveScroll: true,
         });
-    }
-    if (props.event.id) {
+    } else {
         form.patch(route('events.update', props.event.id), {
             preserveScroll: true,
         });
     }
+}
+
+async function deleteEvent() {
+    if (!navigator.onLine) {
+        await saveEventOffline({ id: props.event.id }, 'delete');
+        alert('You are offline. Delete will be synced when online.');
+        return;
+    }
+    router.delete(route('events.destroy', props.event.id), {
+        preserveScroll: true,
+    });
 }
 
 const imagePreview = ref<string | null>(null);

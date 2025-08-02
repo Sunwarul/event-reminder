@@ -7,6 +7,10 @@ import { createApp, h } from 'vue';
 import { ZiggyVue } from 'ziggy-js';
 import { initializeTheme } from './composables/useAppearance';
 
+import { saveEventOffline } from '@/lib/db';
+import { syncQueuedEvents } from '@/lib/sync';
+
+
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
@@ -25,3 +29,15 @@ createInertiaApp({
 
 // This will set light / dark mode on page load...
 initializeTheme();
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js');
+  });
+}
+
+window.addEventListener('online', async () => {
+  console.log('Back to online. Sync now...');
+  await syncQueuedEvents();
+});
+

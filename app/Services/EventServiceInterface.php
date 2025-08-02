@@ -14,9 +14,9 @@ interface EventServiceInterface
 
     public function deleteEvent($id);
 
-    public function getLatestEvents($limit = 10);
+    public function getLatestEvents($query = 'all', $limit = 15);
 
-    public function getUpcomingEvents($limit = 10);
+    public function getUpcomingEvents($limit = 15);
 
-    public function getPastEvents($limit = 10);
+    public function getPastEvents($limit = 15);
 }

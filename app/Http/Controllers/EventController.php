@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use App\Models\Event;
-use Illuminate\Support\Str;
 use App\Enums\EventStatusEnum;
 use App\Utilities\EventIdGenerator;
+use Illuminate\Http\Request;
 use App\Services\EventServiceInterface;
 use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
@@ -20,10 +20,11 @@ class EventController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         return Inertia::render('Admin/Events/Index', [
-            'events' => $this->eventService->getLatestEvents(),
+            'events' => $this->eventService->getLatestEvents($request->query('filter')),
+            'filterBy' => $request->query('filter'),
         ]);
     }
 

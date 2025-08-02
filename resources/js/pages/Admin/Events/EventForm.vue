@@ -13,7 +13,7 @@ const props = defineProps({
     submitLabel: {
         type: String,
         default: 'Save',
-    },
+    }
 });
 
 const form = useForm({
@@ -45,10 +45,16 @@ const eventStatuses = [
 ];
 
 function submit() {
-    form.post(props.event.id ? `/events/${props.event.id}` : '/events', {
-        method: props.event.id ? 'put' : 'post',
-        preserveScroll: true,
-    });
+    if (! props.event.id) {
+        form.post(route('events.store', props.event.id), {
+            preserveScroll: true,
+        });
+    }
+    if (props.event.id) {
+        form.patch(route('events.update', props.event.id), {
+            preserveScroll: true,
+        });
+    }
 }
 
 const imagePreview = ref<string | null>(null);

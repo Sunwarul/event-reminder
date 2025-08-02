@@ -16,7 +16,7 @@ interface EventRepositoryInterface
 
     public function delete($id);
 
-    public function getLatestEvents($limit = 10);
+    public function getLatestEvents($query = 'all', $limit = 10);
 
     public function getUpcomingEvents($limit = 10);
 

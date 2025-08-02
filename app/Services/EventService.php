@@ -13,7 +13,7 @@ class EventService implements EventServiceInterface
         $this->eventRepository = $eventRepository;
     }
 
-    public function getAllEvents()
+    public function getAllEvents($query = null)
     {
         return $this->eventRepository->paginate();
     }
@@ -38,17 +38,17 @@ class EventService implements EventServiceInterface
         return $this->eventRepository->delete($id);
     }
 
-    public function getLatestEvents($limit = 10)
+    public function getLatestEvents($query = 'all', $limit = 15)
     {
-        return $this->eventRepository->getLatestEvents($limit);
+        return $this->eventRepository->getLatestEvents($query, $limit);
     }
 
-    public function getUpcomingEvents($limit = 10)
+    public function getUpcomingEvents($limit = 15)
     {
         return $this->eventRepository->getUpcomingEvents($limit);
     }
 
-    public function getPastEvents($limit = 10)
+    public function getPastEvents($limit = 15)
     {
         return $this->eventRepository->getPastEvents($limit);
     }

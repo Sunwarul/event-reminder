@@ -3,6 +3,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
 import Button from '@/components/ui/button/Button.vue';
+import { ref } from 'vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -15,11 +16,12 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-const { events } = defineProps({
+const { events, filterBy } = defineProps({
     events: {
         type: Object,
         default: () => [],
     },
+    filterBy: String,
 });
 
 const deleteEvent = (id: number) => {
@@ -36,6 +38,8 @@ const deleteEvent = (id: number) => {
     }
 };
 
+const filterStatus = ref(filterBy || 'all');
+
 </script>
 
 <template>
@@ -46,6 +50,13 @@ const deleteEvent = (id: number) => {
         <div class="gap-4 rounded-xl p-4 overflow-x-auto">
             <div class="flex justify-between items-center mb-4">
                 <h1 class="text-2xl font-bold mb-4">Events List</h1>
+                <select v-model="filterStatus" class="border rounded p-2"
+                    @change="(e: any) => router.get('/events', { filter: e?.target?.value })" name="filterStatus">
+                    <option value="all">All Events</option>
+                    <option value="scheduled">Scheduled</option>
+                    <option value="ongoing">On-going</option>
+                    <option value="completed">Completed</option>
+                </select>
                 <Button>
                     <Link href="/events/create" class="">Create Event</Link>
                 </Button>
@@ -54,11 +65,21 @@ const deleteEvent = (id: number) => {
                 <table class="min-w-full bg-white">
                     <thead>
                         <tr>
-                            <th class="px-6 py-3 border-b-2 border-gray-200 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">Event ID</th>
-                            <th class="px-6 py-3 border-b-2 border-gray-200 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                            <th class="px-6 py-3 border-b-2 border-gray-200 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">Start Time</th>
-                            <th class="px-6 py-3 border-b-2 border-gray-200 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">End Time</th>
-                            <th class="px-6 py-3 border-b-2 border-gray-200 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th
+                                class="px-6 py-3 border-b-2 border-gray-200 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                Event ID</th>
+                            <th
+                                class="px-6 py-3 border-b-2 border-gray-200 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                Name</th>
+                            <th
+                                class="px-6 py-3 border-b-2 border-gray-200 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                Start Time</th>
+                            <th
+                                class="px-6 py-3 border-b-2 border-gray-200 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                End Time</th>
+                            <th
+                                class="px-6 py-3 border-b-2 border-gray-200 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                Status</th>
                             <th class="px-6 py-3 border-b-2 border-gray-200"></th>
                         </tr>
                     </thead>
@@ -67,32 +88,38 @@ const deleteEvent = (id: number) => {
                         <tr v-for="event in events.data" :key="event.id">
                             <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">{{ event.event_id }}</td>
                             <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">{{ event.name }}</td>
-                            <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">{{ event.start_time }}</td>
+                            <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">{{ event.start_time }}
+                            </td>
                             <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">{{ event.end_time }}</td>
                             <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">{{ event.status }}</td>
                             <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-                                <Link :href="'/events/' + event.id" class="text-blue-600 hover:text-blue-900">View</Link>
-                                <Link :href="'/events/' + event.id + '/edit'"  class="text-blue-600 hover:text-blue-900 px-2">Edit</Link>
-                                <Button @click.prevent="deleteEvent(event.id)" class="px-2">Delete</Button>
+                                <Link :href="'/events/' + event.id" class="text-blue-600 hover:text-blue-900">View
+                                </Link>
+                                <Link :href="'/events/' + event.id + '/edit'"
+                                    class="text-blue-600 hover:text-blue-900 px-2">Edit</Link>
+                                <button @click.prevent="deleteEvent(event.id)"
+                                    class="text-blue-600 hover:text-blue-900 px-2">Delete</button>
                             </td>
                         </tr>
                     </tbody>
                     <tfoot></tfoot>
-                        <tr>
-                            <td colspan="6" class="px-6 py-4 whitespace-no-wrap border-t border-gray-200">
-                                <div class="flex justify-between">
-                                    <span>Total Events: {{ events.total }}</span>
-                                    <span>
-                                        <Link :href="events.prev_page_url" class="text-blue-600 hover:text-blue-900" v-if="events.prev_page_url">Previous</Link>
-                                        <Link :href="events.next_page_url" class="text-blue-600 hover:text-blue-900" v-if="events.next_page_url">Next</Link>
-                                    </span>
-                                    <span>
-                                        Showing {{ events.from }} to {{ events.to }} of {{ events.total }} entries
-                                    </span>
-                                    <span>Page: {{ events.current_page }} of {{ events.last_page }}</span>
-                                </div>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td colspan="6" class="px-6 py-4 whitespace-no-wrap border-t border-gray-200">
+                            <div class="flex justify-between">
+                                <span>Total Events: {{ events.total }}</span>
+                                <span>
+                                    <Link :href="events.prev_page_url" class="text-blue-600 hover:text-blue-900"
+                                        v-if="events.prev_page_url">Previous</Link>
+                                    <Link :href="events.next_page_url" class="text-blue-600 hover:text-blue-900"
+                                        v-if="events.next_page_url">Next</Link>
+                                </span>
+                                <span>
+                                    Showing {{ events.from }} to {{ events.to }} of {{ events.total }} entries
+                                </span>
+                                <span>Page: {{ events.current_page }} of {{ events.last_page }}</span>
+                            </div>
+                        </td>
+                    </tr>
                 </table>
             </div>
         </div>

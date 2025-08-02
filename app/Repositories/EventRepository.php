@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use App\Enums\EventStatusEnum;
+
 class EventRepository implements EventRepositoryInterface
 {
     protected $model;
@@ -46,19 +48,25 @@ class EventRepository implements EventRepositoryInterface
         return $event->delete();
     }
 
-    public function getLatestEvents($limit = 10)
+    public function getLatestEvents($query = 'all', $limit = 15)
     {
-        return $this->model->latest()->paginate($limit);
+        return match($query) {
+            'all' => $this->model->paginate($limit),
+            'ongoing' => $this->model->where('status', EventStatusEnum::ONGOING)->paginate($limit),
+            'scheduled' => $this->model->where('status', EventStatusEnum::SCHEDULED)->paginate($limit),
+            'completed' => $this->model->where('status', EventStatusEnum::COMPLETE)->paginate($limit),
+            default => $this->model->paginate($limit),
+        };
     }
 
-    public function getUpcomingEvents($limit = 10)
+    public function getUpcomingEvents($limit = 15)
     {
-        return $this->model->where('date', '>', now())->orderBy('date')->take($limit)->get();
+        return $this->model->where('status', 'Scheduled')->orderBy('start_time')->paginate($limit);
     }
 
-    public function getPastEvents($limit = 10)
+    public function getPastEvents($limit = 15)
     {
-        return $this->model->where('date', '<', now())->orderBy('date', 'desc')->take($limit)->get();
+        return $this->model->where('status', 'Complete')->orderBy('end_time', 'desc')->paginate($limit);
     }
 
     public function getEventsByUserId($userId)

@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum EventStatusEnum : string
+enum EventStatusEnum: string
 {
     case SCHEDULED = 'Scheduled';
     case ONGOING = 'On-going';

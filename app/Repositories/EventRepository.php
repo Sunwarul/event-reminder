@@ -50,7 +50,7 @@ class EventRepository implements EventRepositoryInterface
 
     public function getLatestEvents($query = 'all', $limit = 15)
     {
-        return match($query) {
+        return match ($query) {
             'all' => $this->model->paginate($limit),
             'ongoing' => $this->model->where('status', EventStatusEnum::ONGOING)->paginate($limit),
             'scheduled' => $this->model->where('status', EventStatusEnum::SCHEDULED)->paginate($limit),

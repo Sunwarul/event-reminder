@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Inertia\Inertia;
-use App\Models\Event;
 use App\Enums\EventStatusEnum;
-use App\Utilities\EventIdGenerator;
-use Illuminate\Http\Request;
-use App\Services\EventServiceInterface;
 use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
+use App\Models\Event;
+use App\Services\EventServiceInterface;
+use App\Utilities\EventIdGenerator;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class EventController extends Controller
 {
@@ -46,12 +46,11 @@ class EventController extends Controller
         $eventRequest['event_id'] = EventIdGenerator::generate(); // Generate a unique event ID
         $eventRequest['status'] = $eventRequest['status'] ?? EventStatusEnum::SCHEDULED; // Default status
 
-        if($request->hasFile('image')) {
+        if ($request->hasFile('image')) {
             $eventRequest['image'] = $request->file('image')->store('events', 'public');
         }
 
         $event = $this->eventService->createEvent($eventRequest);
-
 
         return redirect()->route('events.show', $event->id)
             ->with('success', 'Event created successfully.');
@@ -83,6 +82,7 @@ class EventController extends Controller
     public function update(UpdateEventRequest $request, Event $event)
     {
         $this->eventService->updateEvent($event->id, $request->validated());
+
         return redirect()->route('events.show', $event->id)
             ->with('success', 'Event updated successfully.');
     }
@@ -93,6 +93,7 @@ class EventController extends Controller
     public function destroy(Event $event)
     {
         $this->eventService->deleteEvent($event->id);
+
         return redirect()->route('events.index')
             ->with('success', 'Event deleted successfully.');
     }

@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\EventTypeEnum;
 use App\Enums\EventStatusEnum;
-use Illuminate\Validation\Rules\Enum;
+use App\Enums\EventTypeEnum;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class UpdateEventRequest extends FormRequest
 {

@@ -11,6 +11,7 @@ class EventIdGenerator
     {
         $prefix = $prefix ?? env('EVENT_ID_PREFIX', 'EVT-');
         $uniqueId = uniqid($prefix, true);
+
         return strtoupper($uniqueId);
     }
 }

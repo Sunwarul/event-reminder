@@ -1,10 +1,14 @@
 <?php
 
-use App\Models\Event;
 use App\Enums\EventStatusEnum;
 use App\Enums\EventTypeEnum;
+use App\Models\Event;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use function Pest\Laravel\{get, post, put, delete};
+
+use function Pest\Laravel\delete;
+use function Pest\Laravel\get;
+use function Pest\Laravel\post;
+use function Pest\Laravel\put;
 
 uses(RefreshDatabase::class);
 

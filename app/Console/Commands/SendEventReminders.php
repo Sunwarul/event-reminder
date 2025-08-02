@@ -2,15 +2,16 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use App\Models\Event;
 use App\Mail\EventReminderMail;
-use Illuminate\Support\Facades\Mail;
+use App\Models\Event;
+use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Mail;
 
 class SendEventReminders extends Command
 {
     protected $signature = 'events:send-reminders';
+
     protected $description = 'Send reminder emails for events to external recipients 1 hour before start';
 
     public function handle()
@@ -25,6 +26,6 @@ class SendEventReminders extends Command
                 Mail::to($recipient)->queue(new EventReminderMail($event, $recipient));
             }
         }
-        $this->info('Reminders sent for events starting at ' . $target);
+        $this->info('Reminders sent for events starting at '.$target);
     }
 }
